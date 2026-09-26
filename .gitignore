@@ -11,5 +11,5 @@
 *.cpuprofile
 
 # React Router
-/.react-router/
 .vercel
+/.react-router/
