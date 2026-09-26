@@ -1,0 +1,14 @@
+.DS_Store
+
+.env
+.env.*
+!.env.example
+
+/node_modules/
+/build/
+/dist/
+
+*.cpuprofile
+
+# React Router
+/.react-router/
