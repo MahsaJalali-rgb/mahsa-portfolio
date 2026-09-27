@@ -246,320 +246,333 @@ const payload: {
     setForm(emptyForm);
   }
 
-  return (
-    <main className="min-h-screen bg-gray-50">
-      <header className="border-b bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <div>
-            <button
-              onClick={() => navigate("/admin")}
-              className="text-sm text-gray-500 hover:text-gray-900"
-            >
-              ← Back to Dashboard
-            </button>
-
-            <h1 className="mt-2 text-2xl font-bold">
-              Research
-            </h1>
-          </div>
-
+return (
+  <main className="min-h-screen bg-[#0b0f14] text-white">
+    <header className="border-b border-white/10 bg-[#0f141b]">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
+        <div>
           <button
-            onClick={async () => {
-              await supabase.auth.signOut();
-              navigate("/admin/login");
-            }}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50"
+            onClick={() => navigate("/admin")}
+            className="text-sm text-gray-500 transition hover:text-white"
           >
-            Logout
+            ← Back to Dashboard
           </button>
+
+          <p className="mt-3 text-xs font-medium uppercase tracking-[0.3em] text-gray-600">
+            Administration
+          </p>
+
+          <h1 className="mt-2 text-2xl font-semibold tracking-tight text-white">
+            Research
+          </h1>
         </div>
-      </header>
 
-      <div className="mx-auto max-w-7xl px-6 py-10">
-        {/* Form */}
+        <button
+          onClick={async () => {
+            await supabase.auth.signOut();
+            navigate("/admin/login");
+          }}
+          className="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-gray-300 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+        >
+          Logout
+        </button>
+      </div>
+    </header>
 
-        <section className="rounded-2xl bg-white p-6 shadow-sm">
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold">
-              {editingId ? "Edit Research" : "Add Research"}
-            </h2>
+    <div className="mx-auto max-w-7xl px-6 py-10">
+      {/* Form */}
+      <section className="rounded-2xl border border-white/10 bg-[#111820] p-6 md:p-8">
+        <div className="mb-6 border-b border-white/10 pb-5">
+          <h2 className="text-xl font-semibold text-white">
+            {editingId ? "Edit Research" : "Add Research"}
+          </h2>
 
-            <p className="mt-1 text-sm text-gray-500">
-              Add or edit a research project.
+          <p className="mt-1 text-sm text-gray-500">
+            Add or edit a research project.
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label
+              htmlFor="title"
+              className="mb-2 block text-sm font-medium text-gray-300"
+            >
+              Title
+            </label>
+
+            <input
+              id="title"
+              name="title"
+              required
+              value={form.title}
+              onChange={handleChange}
+              className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-white/30"
+              placeholder="Research title"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="type"
+              className="mb-2 block text-sm font-medium text-gray-300"
+            >
+              Research Type
+            </label>
+
+            <select
+              id="type"
+              name="type"
+              value={form.type}
+              onChange={handleChange}
+              className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition focus:border-white/30"
+            >
+              <option value="research" className="bg-[#111820]">
+                Research
+              </option>
+
+              <option value="entrepreneur" className="bg-[#111820]">
+                Entrepreneur
+              </option>
+            </select>
+          </div>
+
+          <div>
+            <label
+              htmlFor="image"
+              className="mb-2 block text-sm font-medium text-gray-300"
+            >
+              Research Image
+            </label>
+
+            <input
+              id="image"
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              onChange={(event) => {
+                setImageFile(event.target.files?.[0] ?? null);
+              }}
+              className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-sm text-gray-400 file:mr-4 file:rounded-md file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-sm file:text-gray-300"
+            />
+
+            <p className="mt-1 text-xs text-gray-600">
+              PNG, JPG or WebP
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label
-                htmlFor="title"
-                className="mb-2 block text-sm font-medium"
-              >
-                Title
-              </label>
+          <div>
+            <label
+              htmlFor="gif"
+              className="mb-2 block text-sm font-medium text-gray-300"
+            >
+              Research Media
+            </label>
 
-              <input
-                id="title"
-                name="title"
-                required
-                value={form.title}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-gray-900"
-                placeholder="Research title"
-              />
-            </div>
+            <input
+              id="gif"
+              type="file"
+              accept="image/gif,video/mp4,video/webm"
+              onChange={(event) => {
+                setGifFile(event.target.files?.[0] ?? null);
+              }}
+              className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-sm text-gray-400 file:mr-4 file:rounded-md file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-sm file:text-gray-300"
+            />
 
-            <div>
-  <label
-    htmlFor="type"
-    className="mb-2 block text-sm font-medium"
-  >
-    Research Type
-  </label>
-
-  <select
-    id="type"
-    name="type"
-    value={form.type}
-    onChange={handleChange}
-    className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-gray-900"
-  >
-    <option value="research">
-      Research
-    </option>
-
-    <option value="entrepreneur">
-      Entrepreneur
-    </option>
-  </select>
-</div>
-
-<div>
-  <label
-    htmlFor="image"
-    className="mb-2 block text-sm font-medium"
-  >
-    Research Image
-  </label>
-
-  <input
-    id="image"
-    type="file"
-    accept="image/png,image/jpeg,image/webp"
-    onChange={(event) => {
-      setImageFile(event.target.files?.[0] ?? null);
-    }}
-    className="w-full rounded-lg border border-gray-300 px-4 py-3"
-  />
-
-  <p className="mt-1 text-xs text-gray-500">
-    PNG, JPG or WebP
-  </p>
-</div>
-
-<div>
-  <label
-    htmlFor="gif"
-    className="mb-2 block text-sm font-medium"
-  >
-    Research GIF
-  </label>
-
-  <input
-    id="gif"
-    type="file"
-    accept="image/gif"
-    onChange={(event) => {
-      setGifFile(event.target.files?.[0] ?? null);
-    }}
-    className="w-full rounded-lg border border-gray-300 px-4 py-3"
-  />
-
-  <p className="mt-1 text-xs text-gray-500">
-    GIF animation for the research section
-  </p>
-</div>
-
-            <div>
-              <label
-                htmlFor="description"
-                className="mb-2 block text-sm font-medium"
-              >
-                Description
-              </label>
-
-              <textarea
-                id="description"
-                name="description"
-                rows={5}
-                value={form.description}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-gray-900"
-                placeholder="Research description"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="research_url"
-                className="mb-2 block text-sm font-medium"
-              >
-                Research URL
-              </label>
-
-              <input
-                id="research_url"
-                name="research_url"
-                type="url"
-                value={form.research_url}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-gray-900"
-                placeholder="https://..."
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="display_order"
-                className="mb-2 block text-sm font-medium"
-              >
-                Display Order
-              </label>
-
-              <input
-                id="display_order"
-                name="display_order"
-                type="number"
-                value={form.display_order}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-gray-900"
-              />
-            </div>
-
-            {error && (
-              <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
-                {error}
-              </div>
-            )}
-
-            <div className="flex gap-3">
-              <button
-                type="submit"
-                disabled={saving}
-                className="rounded-lg bg-gray-900 px-5 py-3 text-sm font-medium text-white hover:bg-gray-700 disabled:opacity-50"
-              >
-                {saving
-                  ? "Saving..."
-                  : editingId
-                    ? "Update Research"
-                    : "Add Research"}
-              </button>
-
-              {editingId && (
-                <button
-                  type="button"
-                  onClick={handleCancelEdit}
-                  className="rounded-lg border border-gray-300 px-5 py-3 text-sm font-medium hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-              )}
-            </div>
-          </form>
-        </section>
-
-        {/* List */}
-
-        <section className="mt-8">
-          <div className="mb-5">
-            <h2 className="text-xl font-semibold">
-              Research Projects
-            </h2>
+            <p className="mt-1 text-xs text-gray-600">
+              GIF, MP4 or WebM
+            </p>
           </div>
 
-          {loading ? (
-            <p className="text-gray-500">
-              Loading...
-            </p>
-          ) : research.length === 0 ? (
-            <div className="rounded-2xl bg-white p-8 text-center text-gray-500 shadow-sm">
-              No research projects yet.
-            </div>
-          ) : (
-            
-            <div className="space-y-4">
-              {research.map((item) => (
-                <article
-                  key={item.id}
-                  className="rounded-2xl bg-white p-6 shadow-sm"
-                >
-                    {(item.image_url || item.gif_url) && (
-  <div className="mb-5 overflow-hidden rounded-xl">
-    <img
-      src={item.gif_url ?? item.image_url ?? ""}
-      alt={item.title}
-      className="h-48 w-full object-cover"
-    />
-  </div>
-)}
-                  <div className="flex flex-col justify-between gap-5 md:flex-row">
-                    <div>
-                      <div className="flex flex-wrap items-center gap-3">
-  <span className="rounded-md bg-gray-100 px-2 py-1 text-xs text-gray-500">
-    #{item.display_order}
-  </span>
+          <div>
+            <label
+              htmlFor="description"
+              className="mb-2 block text-sm font-medium text-gray-300"
+            >
+              Description
+            </label>
 
-  <span className="rounded-md bg-gray-100 px-2 py-1 text-xs text-gray-500">
-    {item.type === "entrepreneur"
-      ? "Entrepreneur"
-      : "Research"}
-  </span>
+            <textarea
+              id="description"
+              name="description"
+              rows={5}
+              value={form.description}
+              onChange={handleChange}
+              className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-white/30"
+              placeholder="Research description"
+            />
+          </div>
 
-  <h3 className="text-lg font-semibold">
-    {item.title}
-  </h3>
-</div>
+          <div>
+            <label
+              htmlFor="research_url"
+              className="mb-2 block text-sm font-medium text-gray-300"
+            >
+              Research URL
+            </label>
 
-                      {item.description && (
-                        <p className="mt-3 max-w-3xl text-gray-600">
-                          {item.description}
-                        </p>
-                      )}
+            <input
+              id="research_url"
+              name="research_url"
+              type="url"
+              value={form.research_url}
+              onChange={handleChange}
+              className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-white/30"
+              placeholder="https://..."
+            />
+          </div>
 
-                      {item.research_url && (
-                        <a
-                          href={item.research_url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="mt-3 inline-block text-sm text-blue-600 hover:underline"
-                        >
-                          Research Link →
-                        </a>
-                      )}
-                    </div>
+          <div>
+            <label
+              htmlFor="display_order"
+              className="mb-2 block text-sm font-medium text-gray-300"
+            >
+              Display Order
+            </label>
 
-                    <div className="flex shrink-0 gap-2">
-                      <button
-                        onClick={() => handleEdit(item)}
-                        className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
-                      >
-                        Edit
-                      </button>
+            <input
+              id="display_order"
+              name="display_order"
+              type="number"
+              value={form.display_order}
+              onChange={handleChange}
+              className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-white/30"
+            />
+          </div>
 
-                      <button
-                        onClick={() => handleDelete(item.id)}
-                        className="rounded-lg border border-red-200 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                </article>
-              ))}
+          {error && (
+            <div className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+              {error}
             </div>
           )}
-        </section>
+
+          <div className="flex gap-3 pt-2">
+            <button
+              type="submit"
+              disabled={saving}
+              className="rounded-lg bg-white px-5 py-3 text-sm font-medium text-gray-900 transition hover:bg-gray-200 disabled:opacity-50"
+            >
+              {saving
+                ? "Saving..."
+                : editingId
+                  ? "Update Research"
+                  : "Add Research"}
+            </button>
+
+            {editingId && (
+              <button
+                type="button"
+                onClick={handleCancelEdit}
+                className="rounded-lg border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium text-gray-300 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+              >
+                Cancel
+              </button>
+            )}
+          </div>
+        </form>
+      </section>
+
+      {/* List */}
+      <section className="mt-10">
+        <div className="mb-5">
+          <p className="text-xs font-medium uppercase tracking-[0.3em] text-gray-600">
+            Portfolio
+          </p>
+
+          <h2 className="mt-2 text-xl font-semibold text-white">
+            Research Projects
+          </h2>
+        </div>
+
+        {loading ? (
+          <p className="text-sm text-gray-500">
+            Loading...
+          </p>
+        ) : research.length === 0 ? (
+          <div className="rounded-2xl border border-white/10 bg-[#111820] p-8 text-center text-gray-500">
+            No research projects yet.
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {research.map((item) => (
+              <article
+                key={item.id}
+                className="rounded-2xl border border-white/10 bg-[#111820] p-6 transition hover:border-white/15"
+              >
+                {(item.image_url || item.gif_url) && (
+                  <div className="mb-5 overflow-hidden rounded-xl border border-white/10 bg-[#0b0f14]">
+                    <img
+                      src={item.gif_url ?? item.image_url ?? ""}
+                      alt={item.title}
+                      className="h-48 w-full object-cover"
+                    />
+                  </div>
+                )}
+
+                <div className="flex flex-col justify-between gap-5 md:flex-row">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <span className="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-xs text-gray-500">
+                        #{item.display_order}
+                      </span>
+
+                      <span className="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-xs text-gray-500">
+                        {item.type === "entrepreneur"
+                          ? "Entrepreneur"
+                          : "Research"}
+                      </span>
+
+                      <h3 className="text-lg font-semibold text-gray-100">
+                        {item.title}
+                      </h3>
+                    </div>
+
+                    {item.description && (
+                      <p className="mt-3 max-w-3xl text-sm leading-6 text-gray-500">
+                        {item.description}
+                      </p>
+                    )}
+
+                    {item.research_url && (
+                      <a
+                        href={item.research_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mt-3 inline-block text-sm text-gray-400 transition hover:text-white hover:underline"
+                      >
+                        Research Link →
+                      </a>
+                    )}
+                  </div>
+
+                  <div className="flex shrink-0 gap-2">
+                    <button
+                      onClick={() => handleEdit(item)}
+                      className="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-gray-300 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      onClick={() => handleDelete(item.id)}
+                      className="rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm text-red-300 transition hover:bg-red-500/20"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <div className="mt-12 border-t border-white/10 pt-6">
+        <p className="text-xs text-gray-600">
+          Portfolio Management System
+        </p>
       </div>
-    </main>
-  );
+    </div>
+  </main>
+);
+
 }

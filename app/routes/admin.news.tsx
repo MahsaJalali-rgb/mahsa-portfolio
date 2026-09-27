@@ -223,232 +223,316 @@ export default function AdminNews() {
     navigate("/admin/login");
   }
 
-  return (
-    <main className="min-h-screen bg-gray-50 px-6 py-10">
-      <div className="mx-auto max-w-6xl">
-
-        {/* Header */}
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-semibold">
-              News
-            </h1>
-
-            <p className="mt-2 text-sm text-gray-500">
-              Manage headline news, interviews and media coverage.
-            </p>
-          </div>
-
+return (
+  <main className="min-h-screen bg-[#0b0f14] px-6 py-10 text-white">
+    <div className="mx-auto max-w-6xl">
+      {/* Header */}
+      <div className="mb-8 flex items-start justify-between gap-6">
+        <div>
           <button
-            onClick={handleLogout}
-            className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm hover:bg-gray-100"
+            type="button"
+            onClick={() => navigate("/admin")}
+            className="mb-4 text-sm text-gray-500 transition hover:text-white"
           >
-            Logout
+            ← Back to dashboard
           </button>
+
+          <p className="text-xs font-medium uppercase tracking-[0.3em] text-gray-600">
+            Administration
+          </p>
+
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white">
+            News
+          </h1>
+
+          <p className="mt-2 text-sm leading-6 text-gray-500">
+            Manage headline news, interviews and media coverage.
+          </p>
         </div>
 
-        {/* Form */}
-        <section className="rounded-2xl bg-white p-6 shadow-sm">
-          <div className="mb-6 flex items-center justify-between">
-            <h2 className="text-xl font-semibold">
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="shrink-0 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-gray-300 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+        >
+          Logout
+        </button>
+      </div>
+
+      {/* Add / Edit Form */}
+      <section className="rounded-2xl border border-white/10 bg-[#111820] p-6 md:p-8">
+        <div className="mb-8 flex items-center justify-between gap-4">
+          <div>
+            <p className="text-[10px] font-medium uppercase tracking-[0.25em] text-gray-600">
+              Content
+            </p>
+
+            <h2 className="mt-2 text-xl font-semibold text-gray-100">
               {editingId ? "Edit News" : "Add News"}
             </h2>
-
-            {editingId && (
-              <button
-                onClick={resetForm}
-                className="text-sm text-gray-500 underline"
-              >
-                Cancel
-              </button>
-            )}
           </div>
 
-          <form
-            onSubmit={handleSubmit}
-            className="grid gap-5"
-          >
-            {/* Title */}
+          {editingId && (
+            <button
+              type="button"
+              onClick={resetForm}
+              className="text-sm text-gray-500 underline underline-offset-4 transition hover:text-white"
+            >
+              Cancel
+            </button>
+          )}
+        </div>
+
+        <form
+          onSubmit={handleSubmit}
+          className="grid gap-6"
+        >
+          {/* Title */}
+          <div>
+            <label
+              htmlFor="title"
+              className="mb-2 block text-sm font-medium text-gray-300"
+            >
+              Title
+            </label>
+
+            <input
+              id="title"
+              type="text"
+              value={form.title}
+              onChange={(event) =>
+                handleChange("title", event.target.value)
+              }
+              className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-700 focus:border-white/30"
+              placeholder="News headline"
+            />
+          </div>
+
+          {/* Description */}
+          <div>
+            <label
+              htmlFor="description"
+              className="mb-2 block text-sm font-medium text-gray-300"
+            >
+              Short Description
+            </label>
+
+            <textarea
+              id="description"
+              value={form.description}
+              onChange={(event) =>
+                handleChange("description", event.target.value)
+              }
+              rows={3}
+              className="w-full resize-y rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-700 focus:border-white/30"
+              placeholder="Short summary of the news..."
+            />
+          </div>
+
+          {/* Content */}
+          <div>
+            <label
+              htmlFor="content"
+              className="mb-2 block text-sm font-medium text-gray-300"
+            >
+              Content
+            </label>
+
+            <textarea
+              id="content"
+              value={form.content}
+              onChange={(event) =>
+                handleChange("content", event.target.value)
+              }
+              rows={7}
+              className="w-full resize-y rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-700 focus:border-white/30"
+              placeholder="Full news content..."
+            />
+          </div>
+
+          {/* Media */}
+          <div className="space-y-6 border-t border-white/10 pt-6">
             <div>
-              <label className="mb-2 block text-sm font-medium">
-                Title
-              </label>
+              <p className="text-[10px] font-medium uppercase tracking-[0.25em] text-gray-600">
+                Media
+              </p>
 
-              <input
-                type="text"
-                value={form.title}
-                onChange={(event) =>
-                  handleChange("title", event.target.value)
-                }
-                className="w-full rounded-lg border border-gray-300 px-4 py-3"
-                placeholder="News headline"
-              />
-            </div>
+              <h3 className="mt-2 text-base font-semibold text-gray-200">
+                News Media
+              </h3>
 
-            {/* Description */}
-            <div>
-              <label className="mb-2 block text-sm font-medium">
-                Short Description
-              </label>
-
-              <textarea
-                value={form.description}
-                onChange={(event) =>
-                  handleChange("description", event.target.value)
-                }
-                rows={3}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3"
-              />
-            </div>
-
-            {/* Content */}
-            <div>
-              <label className="mb-2 block text-sm font-medium">
-                Content
-              </label>
-
-              <textarea
-                value={form.content}
-                onChange={(event) =>
-                  handleChange("content", event.target.value)
-                }
-                rows={7}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3"
-                placeholder="Full news content..."
-              />
+              <p className="mt-1 text-sm text-gray-500">
+                Add an image or video URL for this news item.
+              </p>
             </div>
 
             {/* Image */}
             <div>
-              <label className="mb-2 block text-sm font-medium">
+              <label
+                htmlFor="image_url"
+                className="mb-2 block text-sm font-medium text-gray-300"
+              >
                 Image URL
               </label>
 
               <input
-                type="text"
+                id="image_url"
+                type="url"
                 value={form.image_url}
                 onChange={(event) =>
                   handleChange("image_url", event.target.value)
                 }
-                className="w-full rounded-lg border border-gray-300 px-4 py-3"
+                className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-700 focus:border-white/30"
                 placeholder="https://..."
               />
             </div>
+
+            {/* Video */}
             <div>
-  <label className="mb-2 block text-sm font-medium">
-    Video URL
-  </label>
+              <label
+                htmlFor="video_url"
+                className="mb-2 block text-sm font-medium text-gray-300"
+              >
+                Video URL
+              </label>
 
-  <input
-    type="url"
-    value={form.video_url}
-    onChange={(event) =>
-      handleChange("video_url", event.target.value)
-    }
-    className="w-full rounded-lg border border-gray-300 px-4 py-3"
-    placeholder="https://www.youtube.com/watch?v=..."
-  />
+              <input
+                id="video_url"
+                type="url"
+                value={form.video_url}
+                onChange={(event) =>
+                  handleChange("video_url", event.target.value)
+                }
+                className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-700 focus:border-white/30"
+                placeholder="https://www.youtube.com/watch?v=..."
+              />
 
-  <p className="mt-1 text-xs text-gray-500">
-    Optional. YouTube, Vimeo, or another video URL.
-  </p>
-</div>
+              <p className="mt-2 text-xs text-gray-600">
+                Optional. YouTube, Vimeo, or another video URL.
+              </p>
+            </div>
+          </div>
 
-            {/* Date + Type */}
-            <div className="grid gap-5 md:grid-cols-2">
-              <div>
-                <label className="mb-2 block text-sm font-medium">
-                  News Date
-                </label>
+          {/* Date + Type */}
+          <div className="grid gap-6 md:grid-cols-2">
+            <div>
+              <label
+                htmlFor="news_date"
+                className="mb-2 block text-sm font-medium text-gray-300"
+              >
+                News Date
+              </label>
 
-                <input
-                  type="date"
-                  value={form.news_date}
-                  onChange={(event) =>
-                    handleChange("news_date", event.target.value)
-                  }
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium">
-                  Type
-                </label>
-
-                <input
-                  type="text"
-                  value={form.type}
-                  onChange={(event) =>
-                    handleChange("type", event.target.value)
-                  }
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3"
-                  placeholder="Interview, Award, Media, ..."
-                />
-              </div>
+              <input
+                id="news_date"
+                type="date"
+                value={form.news_date}
+                onChange={(event) =>
+                  handleChange("news_date", event.target.value)
+                }
+                className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition focus:border-white/30"
+              />
             </div>
 
-            {/* Source + URL */}
-            <div className="grid gap-5 md:grid-cols-2">
-              <div>
-                <label className="mb-2 block text-sm font-medium">
-                  Source
-                </label>
+            <div>
+              <label
+                htmlFor="type"
+                className="mb-2 block text-sm font-medium text-gray-300"
+              >
+                Type
+              </label>
 
-                <input
-                  type="text"
-                  value={form.source}
-                  onChange={(event) =>
-                    handleChange("source", event.target.value)
-                  }
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3"
-                  placeholder="University News"
-                />
-              </div>
+              <input
+                id="type"
+                type="text"
+                value={form.type}
+                onChange={(event) =>
+                  handleChange("type", event.target.value)
+                }
+                className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-700 focus:border-white/30"
+                placeholder="Interview, Award, Media, ..."
+              />
+            </div>
+          </div>
 
-              <div>
-                <label className="mb-2 block text-sm font-medium">
-                  External URL
-                </label>
+          {/* Source + External URL */}
+          <div className="grid gap-6 md:grid-cols-2">
+            <div>
+              <label
+                htmlFor="source"
+                className="mb-2 block text-sm font-medium text-gray-300"
+              >
+                Source
+              </label>
 
-                <input
-                  type="text"
-                  value={form.external_url}
-                  onChange={(event) =>
-                    handleChange("external_url", event.target.value)
-                  }
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3"
-                  placeholder="https://..."
-                />
-              </div>
+              <input
+                id="source"
+                type="text"
+                value={form.source}
+                onChange={(event) =>
+                  handleChange("source", event.target.value)
+                }
+                className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-700 focus:border-white/30"
+                placeholder="University News"
+              />
             </div>
 
-            {/* Published */}
-            <label className="flex items-center gap-3">
+            <div>
+              <label
+                htmlFor="external_url"
+                className="mb-2 block text-sm font-medium text-gray-300"
+              >
+                External URL
+              </label>
+
+              <input
+                id="external_url"
+                type="url"
+                value={form.external_url}
+                onChange={(event) =>
+                  handleChange("external_url", event.target.value)
+                }
+                className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-700 focus:border-white/30"
+                placeholder="https://..."
+              />
+            </div>
+          </div>
+
+          {/* Published */}
+          <div className="border-t border-white/10 pt-6">
+            <label className="flex cursor-pointer items-center gap-3">
               <input
                 type="checkbox"
                 checked={form.published}
                 onChange={(event) =>
                   handleChange("published", event.target.checked)
                 }
-                className="h-4 w-4"
+                className="h-4 w-4 rounded border-white/20 bg-[#0b0f14] accent-white"
               />
 
-              <span className="text-sm font-medium">
+              <span className="text-sm font-medium text-gray-300">
                 Published
               </span>
+
+              <span className="text-xs text-gray-600">
+                Show this news item on the public website
+              </span>
             </label>
+          </div>
 
-            {error && (
-              <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
-                {error}
-              </p>
-            )}
+          {/* Error */}
+          {error && (
+            <p className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+              {error}
+            </p>
+          )}
 
+          {/* Submit */}
+          <div className="border-t border-white/10 pt-6">
             <button
               type="submit"
               disabled={saving}
-              className="rounded-lg bg-black px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-800 disabled:opacity-50"
+              className="w-full rounded-lg bg-white px-5 py-3 text-sm font-medium text-gray-900 transition hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {saving
                 ? "Saving..."
@@ -456,103 +540,139 @@ export default function AdminNews() {
                   ? "Update News"
                   : "Add News"}
             </button>
-          </form>
-        </section>
+          </div>
+        </form>
+      </section>
 
-        {/* News List */}
-        <section className="mt-8">
-          <h2 className="mb-4 text-xl font-semibold">
+      {/* News List */}
+      <section className="mt-10">
+        <div className="mb-5">
+          <p className="text-[10px] font-medium uppercase tracking-[0.25em] text-gray-600">
+            Content Management
+          </p>
+
+          <h2 className="mt-2 text-xl font-semibold text-gray-100">
             News List
           </h2>
+        </div>
 
-          {loading ? (
+        {loading ? (
+          <div className="rounded-2xl border border-white/10 bg-[#111820] p-8">
             <p className="text-sm text-gray-500">
               Loading...
             </p>
-          ) : news.length === 0 ? (
+          </div>
+        ) : news.length === 0 ? (
+          <div className="rounded-2xl border border-white/10 bg-[#111820] p-8">
             <p className="text-sm text-gray-500">
               No news items yet.
             </p>
-          ) : (
-            <div className="space-y-4">
-              {news.map((item) => (
-                <article
-                  key={item.id}
-                  className="rounded-2xl bg-white p-6 shadow-sm"
-                >
-                  <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {news.map((item) => (
+              <article
+                key={item.id}
+                className="rounded-2xl border border-white/10 bg-[#111820] p-6 transition hover:border-white/15"
+              >
+                <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+                  {/* News Info */}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <h3 className="text-lg font-semibold text-gray-100">
+                        {item.title}
+                      </h3>
 
-                    <div className="flex-1">
-                      <div className="flex flex-wrap items-center gap-3">
-                        <h3 className="text-lg font-semibold">
-                          {item.title}
-                        </h3>
-
-                        <span
-                          className={`rounded-full px-3 py-1 text-xs ${
-                            item.published
-                              ? "bg-green-100 text-green-700"
-                              : "bg-gray-100 text-gray-600"
-                          }`}
-                        >
-                          {item.published
-                            ? "Published"
-                            : "Draft"}
-                        </span>
-                      </div>
-
-                      <p className="mt-2 text-sm text-gray-500">
-                        {item.news_date}
-                        {item.type
-                          ? ` • ${item.type}`
-                          : ""}
-                        {item.source
-                          ? ` • ${item.source}`
-                          : ""}
-                      </p>
-
-                      {item.description && (
-                        <p className="mt-3 text-sm leading-6 text-gray-600">
-                          {item.description}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() =>
-                          togglePublished(item)
-                        }
-                        className="rounded-lg border border-gray-300 px-3 py-2 text-sm hover:bg-gray-50"
+                      <span
+                        className={`rounded-full border px-3 py-1 text-xs ${
+                          item.published
+                            ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-300"
+                            : "border-white/10 bg-white/5 text-gray-500"
+                        }`}
                       >
                         {item.published
-                          ? "Unpublish"
-                          : "Publish"}
-                      </button>
-
-                      <button
-                        onClick={() => startEdit(item)}
-                        className="rounded-lg border border-gray-300 px-3 py-2 text-sm hover:bg-gray-50"
-                      >
-                        Edit
-                      </button>
-
-                      <button
-                        onClick={() =>
-                          handleDelete(item.id)
-                        }
-                        className="rounded-lg border border-red-200 px-3 py-2 text-sm text-red-600 hover:bg-red-50"
-                      >
-                        Delete
-                      </button>
+                          ? "Published"
+                          : "Draft"}
+                      </span>
                     </div>
+
+                    <p className="mt-2 text-sm text-gray-600">
+                      {item.news_date}
+                      {item.type
+                        ? ` • ${item.type}`
+                        : ""}
+                      {item.source
+                        ? ` • ${item.source}`
+                        : ""}
+                    </p>
+
+                    {item.description && (
+                      <p className="mt-3 max-w-3xl text-sm leading-6 text-gray-500">
+                        {item.description}
+                      </p>
+                    )}
+
+                    {/* Media indicators */}
+                    {(item.image_url || item.video_url) && (
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {item.image_url && (
+                          <span className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-gray-500">
+                            Image
+                          </span>
+                        )}
+
+                        {item.video_url && (
+                          <span className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-gray-500">
+                            Video
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
-                </article>
-              ))}
-            </div>
-          )}
-        </section>
+
+                  {/* Actions */}
+                  <div className="flex shrink-0 flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => togglePublished(item)}
+                      className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-gray-400 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+                    >
+                      {item.published
+                        ? "Unpublish"
+                        : "Publish"}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => startEdit(item)}
+                      className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-gray-400 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(item.id)}
+                      className="rounded-lg border border-red-500/20 bg-red-500/5 px-3 py-2 text-sm text-red-400 transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-300"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Footer */}
+      <div className="mt-12 border-t border-white/10 pt-6">
+        <p className="text-xs text-gray-600">
+          Portfolio Management System
+        </p>
       </div>
-    </main>
-  );
+    </div>
+  </main>
+);
+
 }

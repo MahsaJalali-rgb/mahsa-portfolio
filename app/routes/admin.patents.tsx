@@ -192,241 +192,292 @@ export default function AdminPatents() {
     );
   }
 
-  return (
-    <main className="min-h-screen bg-gray-50 px-6 py-10">
-      <div className="mx-auto max-w-6xl">
-        {/* Header */}
-
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <button
-              onClick={() => navigate("/admin")}
-              className="mb-3 text-sm text-gray-500 hover:text-gray-900"
-            >
-              ← Back to dashboard
-            </button>
-
-            <h1 className="text-3xl font-bold">
-              Patents
-            </h1>
-
-            <p className="mt-2 text-gray-500">
-              Manage patents and intellectual property.
-            </p>
-          </div>
-
+return (
+  <main className="min-h-screen bg-[#0b0f14] px-6 py-10 text-white">
+    <div className="mx-auto max-w-6xl">
+      {/* Header */}
+      <div className="mb-8 flex items-start justify-between gap-6">
+        <div>
           <button
-            onClick={handleLogout}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-white"
+            type="button"
+            onClick={() => navigate("/admin")}
+            className="mb-4 text-sm text-gray-500 transition hover:text-white"
           >
-            Logout
+            ← Back to dashboard
           </button>
+
+          <p className="text-xs font-medium uppercase tracking-[0.3em] text-gray-600">
+            Administration
+          </p>
+
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white">
+            Patents
+          </h1>
+
+          <p className="mt-2 text-sm leading-6 text-gray-500">
+            Manage patents and intellectual property.
+          </p>
         </div>
 
-        {/* Error */}
-
-        {error && (
-          <div className="mb-6 rounded-lg bg-red-50 p-4 text-sm text-red-700">
-            {error}
-          </div>
-        )}
-
-        {/* Form */}
-
-        <form
-          onSubmit={handleSubmit}
-          className="mb-10 space-y-5 rounded-2xl bg-white p-8 shadow-sm"
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="shrink-0 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-gray-300 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
         >
-          <div>
-            <h2 className="text-xl font-semibold">
-              {editingId ? "Edit Patent" : "Add Patent"}
-            </h2>
+          Logout
+        </button>
+      </div>
 
-            <p className="mt-1 text-sm text-gray-500">
-              Add a patent to the research portfolio.
+      {/* Error */}
+      {error && (
+        <div className="mb-6 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-300">
+          {error}
+        </div>
+      )}
+
+      {/* Form */}
+      <form
+        onSubmit={handleSubmit}
+        className="mb-10 space-y-7 rounded-2xl border border-white/10 bg-[#111820] p-6 md:p-8"
+      >
+        {/* Form Header */}
+        <div className="border-b border-white/10 pb-6">
+          <p className="text-[10px] font-medium uppercase tracking-[0.25em] text-gray-600">
+            Intellectual Property
+          </p>
+
+          <h2 className="mt-2 text-xl font-semibold text-gray-100">
+            {editingId ? "Edit Patent" : "Add Patent"}
+          </h2>
+
+          <p className="mt-1 text-sm leading-6 text-gray-500">
+            Add a patent to the research portfolio.
+          </p>
+        </div>
+
+        {/* Title */}
+        <div>
+          <label
+            htmlFor="title"
+            className="mb-2 block text-sm font-medium text-gray-300"
+          >
+            Title
+          </label>
+
+          <input
+            id="title"
+            name="title"
+            value={form.title}
+            onChange={handleChange}
+            required
+            className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-700 focus:border-white/30"
+            placeholder="Patent title"
+          />
+        </div>
+
+        {/* Inventors */}
+        <div>
+          <label
+            htmlFor="inventors"
+            className="mb-2 block text-sm font-medium text-gray-300"
+          >
+            Inventors
+          </label>
+
+          <input
+            id="inventors"
+            name="inventors"
+            value={form.inventors}
+            onChange={handleChange}
+            className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-700 focus:border-white/30"
+            placeholder="John Smith, Jane Doe, ..."
+          />
+        </div>
+
+        {/* Patent Number + Year */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <div>
+            <label
+              htmlFor="patent_number"
+              className="mb-2 block text-sm font-medium text-gray-300"
+            >
+              Patent Number
+            </label>
+
+            <input
+              id="patent_number"
+              name="patent_number"
+              value={form.patent_number}
+              onChange={handleChange}
+              className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-700 focus:border-white/30"
+              placeholder="US12345678"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="year"
+              className="mb-2 block text-sm font-medium text-gray-300"
+            >
+              Year
+            </label>
+
+            <input
+              id="year"
+              name="year"
+              type="number"
+              value={form.year}
+              onChange={handleChange}
+              className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-700 focus:border-white/30"
+              placeholder="2026"
+            />
+          </div>
+        </div>
+
+        {/* Patent URL */}
+        <div>
+          <label
+            htmlFor="url"
+            className="mb-2 block text-sm font-medium text-gray-300"
+          >
+            Patent URL
+          </label>
+
+          <input
+            id="url"
+            name="url"
+            type="url"
+            value={form.url}
+            onChange={handleChange}
+            className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-700 focus:border-white/30"
+            placeholder="https://..."
+          />
+        </div>
+
+        {/* Description */}
+        <div>
+          <label
+            htmlFor="description"
+            className="mb-2 block text-sm font-medium text-gray-300"
+          >
+            Description
+          </label>
+
+          <textarea
+            id="description"
+            name="description"
+            value={form.description}
+            onChange={handleChange}
+            rows={4}
+            className="w-full resize-y rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-700 focus:border-white/30"
+            placeholder="Short description..."
+          />
+        </div>
+
+        {/* Display Order */}
+        <div>
+          <label
+            htmlFor="display_order"
+            className="mb-2 block text-sm font-medium text-gray-300"
+          >
+            Display Order
+          </label>
+
+          <input
+            id="display_order"
+            name="display_order"
+            type="number"
+            value={form.display_order}
+            onChange={handleChange}
+            className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-700 focus:border-white/30"
+          />
+
+          <p className="mt-2 text-xs text-gray-600">
+            Higher values can be used to prioritize patents on the
+            public website.
+          </p>
+        </div>
+
+        {/* Buttons */}
+        <div className="flex flex-wrap gap-3 border-t border-white/10 pt-6">
+          <button
+            type="submit"
+            disabled={saving}
+            className="rounded-lg bg-white px-6 py-3 font-medium text-gray-900 transition hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {saving
+              ? "Saving..."
+              : editingId
+                ? "Update Patent"
+                : "Add Patent"}
+          </button>
+
+          {editingId && (
+            <button
+              type="button"
+              onClick={handleCancelEdit}
+              className="rounded-lg border border-white/10 bg-white/5 px-6 py-3 font-medium text-gray-300 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+            >
+              Cancel
+            </button>
+          )}
+        </div>
+      </form>
+
+      {/* Patent List */}
+      <section>
+        <div className="mb-5">
+          <p className="text-[10px] font-medium uppercase tracking-[0.25em] text-gray-600">
+            Content Management
+          </p>
+
+          <h2 className="mt-2 text-xl font-semibold text-gray-100">
+            Patent List
+          </h2>
+        </div>
+
+        {patents.length === 0 ? (
+          <div className="rounded-2xl border border-white/10 bg-[#111820] p-8 text-center">
+            <p className="text-sm text-gray-500">
+              No patents yet.
             </p>
           </div>
-
-          {/* Title */}
-
-          <div>
-            <label className="mb-2 block text-sm font-medium">
-              Title
-            </label>
-
-            <input
-              name="title"
-              value={form.title}
-              onChange={handleChange}
-              required
-              className="w-full rounded-lg border border-gray-300 px-4 py-3"
-              placeholder="Patent title"
-            />
-          </div>
-
-          {/* Inventors */}
-
-          <div>
-            <label className="mb-2 block text-sm font-medium">
-              Inventors
-            </label>
-
-            <input
-              name="inventors"
-              value={form.inventors}
-              onChange={handleChange}
-              className="w-full rounded-lg border border-gray-300 px-4 py-3"
-              placeholder="John Smith, Jane Doe, ..."
-            />
-          </div>
-
-          {/* Patent number + Year */}
-
-          <div className="grid gap-5 md:grid-cols-2">
-            <div>
-              <label className="mb-2 block text-sm font-medium">
-                Patent Number
-              </label>
-
-              <input
-                name="patent_number"
-                value={form.patent_number}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3"
-                placeholder="US12345678"
-              />
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium">
-                Year
-              </label>
-
-              <input
-                name="year"
-                type="number"
-                value={form.year}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3"
-                placeholder="2026"
-              />
-            </div>
-          </div>
-
-          {/* URL */}
-
-          <div>
-            <label className="mb-2 block text-sm font-medium">
-              Patent URL
-            </label>
-
-            <input
-              name="url"
-              type="url"
-              value={form.url}
-              onChange={handleChange}
-              className="w-full rounded-lg border border-gray-300 px-4 py-3"
-              placeholder="https://..."
-            />
-          </div>
-
-          {/* Description */}
-
-          <div>
-            <label className="mb-2 block text-sm font-medium">
-              Description
-            </label>
-
-            <textarea
-              name="description"
-              value={form.description}
-              onChange={handleChange}
-              rows={4}
-              className="w-full rounded-lg border border-gray-300 px-4 py-3"
-              placeholder="Short description..."
-            />
-          </div>
-
-          {/* Display Order */}
-
-          <div>
-            <label className="mb-2 block text-sm font-medium">
-              Display Order
-            </label>
-
-            <input
-              name="display_order"
-              type="number"
-              value={form.display_order}
-              onChange={handleChange}
-              className="w-full rounded-lg border border-gray-300 px-4 py-3"
-            />
-          </div>
-
-          {/* Buttons */}
-
-          <div className="flex gap-3">
-            <button
-              type="submit"
-              disabled={saving}
-              className="rounded-lg bg-black px-6 py-3 font-medium text-white hover:bg-gray-800 disabled:opacity-50"
-            >
-              {saving
-                ? "Saving..."
-                : editingId
-                  ? "Update Patent"
-                  : "Add Patent"}
-            </button>
-
-            {editingId && (
-              <button
-                type="button"
-                onClick={handleCancelEdit}
-                className="rounded-lg border border-gray-300 px-6 py-3 font-medium hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-            )}
-          </div>
-        </form>
-
-        {/* Patent list */}
-
-        <div className="space-y-4">
-          {patents.length === 0 ? (
-            <div className="rounded-2xl bg-white p-8 text-center text-gray-500">
-              No patents yet.
-            </div>
-          ) : (
-            patents.map((patent) => (
+        ) : (
+          <div className="space-y-4">
+            {patents.map((patent) => (
               <article
                 key={patent.id}
-                className="rounded-2xl bg-white p-6 shadow-sm"
+                className="rounded-2xl border border-white/10 bg-[#111820] p-6 transition hover:border-white/15"
               >
-                <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold">
-                      {patent.title}
-                    </h3>
+                <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+                  {/* Patent Information */}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <h3 className="text-lg font-semibold text-gray-100">
+                        {patent.title}
+                      </h3>
+
+                      {patent.year && (
+                        <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-gray-500">
+                          {patent.year}
+                        </span>
+                      )}
+                    </div>
 
                     {patent.inventors && (
-                      <p className="mt-2 text-sm text-gray-600">
+                      <p className="mt-3 text-sm leading-6 text-gray-400">
                         {patent.inventors}
                       </p>
                     )}
 
-                    <div className="mt-2 text-sm text-gray-500">
-                      {patent.patent_number && (
-                        <span>{patent.patent_number}</span>
-                      )}
-
-                      {patent.year && (
-                        <span> · {patent.year}</span>
-                      )}
-                    </div>
+                    {patent.patent_number && (
+                      <p className="mt-2 text-xs font-medium uppercase tracking-[0.15em] text-gray-600">
+                        Patent No. {patent.patent_number}
+                      </p>
+                    )}
 
                     {patent.description && (
-                      <p className="mt-3 text-sm leading-6 text-gray-600">
+                      <p className="mt-4 max-w-3xl text-sm leading-6 text-gray-500">
                         {patent.description}
                       </p>
                     )}
@@ -436,34 +487,45 @@ export default function AdminPatents() {
                         href={patent.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mt-3 inline-block text-sm font-medium underline underline-offset-4"
+                        className="mt-4 inline-block text-sm font-medium text-gray-400 underline underline-offset-4 transition hover:text-white"
                       >
-                        View Patent
+                        View Patent →
                       </a>
                     )}
                   </div>
 
+                  {/* Actions */}
                   <div className="flex shrink-0 gap-2">
                     <button
+                      type="button"
                       onClick={() => handleEdit(patent)}
-                      className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+                      className="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-gray-400 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
                     >
                       Edit
                     </button>
 
                     <button
+                      type="button"
                       onClick={() => handleDelete(patent.id)}
-                      className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700 hover:bg-red-100"
+                      className="rounded-lg border border-red-500/20 bg-red-500/5 px-4 py-2 text-sm text-red-400 transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-300"
                     >
                       Delete
                     </button>
                   </div>
                 </div>
               </article>
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Footer */}
+      <div className="mt-12 border-t border-white/10 pt-6">
+        <p className="text-xs text-gray-600">
+          Portfolio Management System
+        </p>
       </div>
-    </main>
-  );
+    </div>
+  </main>
+);
 }

@@ -12,6 +12,7 @@ type Publication = {
   doi: string | null;
   url: string | null;
   description: string | null;
+  image_url: string | null;
   display_order: number;
 };
 
@@ -23,6 +24,7 @@ const emptyForm = {
   doi: "",
   url: "",
   description: "",
+  image_url: "",
   display_order: "0",
 };
 
@@ -37,6 +39,8 @@ export default function AdminPublications() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageUploading, setImageUploading] = useState(false);  
 
   useEffect(() => {
     async function checkUser() {
@@ -81,12 +85,48 @@ export default function AdminPublications() {
       [name]: value,
     }));
   }
+  async function uploadPublicationImage(file: File) {
+  setImageUploading(true);
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  const fileExtension = file.name.split(".").pop();
+  const fileName = `${crypto.randomUUID()}.${fileExtension}`;
 
-    setSaving(true);
-    setError("");
+  const filePath = fileName;
+
+  const { error: uploadError } = await supabase.storage
+    .from("publication-images")
+    .upload(filePath, file, {
+      upsert: false,
+    });
+
+  if (uploadError) {
+    setImageUploading(false);
+    throw uploadError;
+  }
+
+  const {
+    data: { publicUrl },
+  } = supabase.storage
+    .from("publication-images")
+    .getPublicUrl(filePath);
+
+  setImageUploading(false);
+
+  return publicUrl;
+}
+
+async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  event.preventDefault();
+
+  setSaving(true);
+  setError("");
+
+  let imageUrl = form.image_url || null;
+
+  try {
+    if (imageFile) {
+      imageUrl = await uploadPublicationImage(imageFile);
+    }
 
     const payload = {
       title: form.title,
@@ -96,6 +136,7 @@ export default function AdminPublications() {
       doi: form.doi || null,
       url: form.url || null,
       description: form.description || null,
+      image_url: imageUrl,
       display_order: Number(form.display_order) || 0,
       updated_at: new Date().toISOString(),
     };
@@ -124,25 +165,36 @@ export default function AdminPublications() {
     }
 
     setForm(emptyForm);
+    setImageFile(null);
     setEditingId(null);
     setSaving(false);
 
     await loadPublications();
+  } catch (error) {
+    setError(
+      error instanceof Error
+        ? error.message
+        : "Failed to upload publication image.",
+    );
+    setSaving(false);
   }
+}
 
   function handleEdit(publication: Publication) {
     setEditingId(publication.id);
 
     setForm({
-      title: publication.title,
-      authors: publication.authors ?? "",
-      journal: publication.journal ?? "",
-      year: publication.year?.toString() ?? "",
-      doi: publication.doi ?? "",
-      url: publication.url ?? "",
-      description: publication.description ?? "",
-      display_order: publication.display_order.toString(),
-    });
+  title: publication.title,
+  authors: publication.authors ?? "",
+  journal: publication.journal ?? "",
+  year: publication.year?.toString() ?? "",
+  doi: publication.doi ?? "",
+  url: publication.url ?? "",
+  description: publication.description ?? "",
+  image_url: publication.image_url ?? "",
+  display_order: publication.display_order.toString(),
+});
+setImageFile(null);
 
     window.scrollTo({
       top: 0,
@@ -190,272 +242,331 @@ export default function AdminPublications() {
     );
   }
 
-  return (
-    <main className="min-h-screen bg-gray-50 px-6 py-10">
-      <div className="mx-auto max-w-6xl">
-
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <button
-              onClick={() => navigate("/admin")}
-              className="mb-3 text-sm text-gray-500 hover:text-gray-900"
-            >
-              ← Back to dashboard
-            </button>
-
-            <h1 className="text-3xl font-bold">
-              Publications
-            </h1>
-
-            <p className="mt-2 text-gray-500">
-              Manage research publications.
-            </p>
-          </div>
-
+return (
+  <main className="min-h-screen bg-[#0b0f14] px-6 py-10 text-white">
+    <div className="mx-auto max-w-6xl">
+      <div className="mb-8 flex items-center justify-between">
+        <div>
           <button
-            onClick={handleLogout}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-white"
+            onClick={() => navigate("/admin")}
+            className="mb-3 text-sm text-gray-500 transition hover:text-white"
           >
-            Logout
+            ← Back to dashboard
           </button>
+
+          <p className="text-xs font-medium uppercase tracking-[0.3em] text-gray-600">
+            Administration
+          </p>
+
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white">
+            Publications
+          </h1>
+
+          <p className="mt-2 text-sm text-gray-500">
+            Manage research publications.
+          </p>
         </div>
 
-        {error && (
-          <div className="mb-6 rounded-lg bg-red-50 p-4 text-sm text-red-700">
-            {error}
-          </div>
-        )}
-
-        {/* Form */}
-
-        <form
-          onSubmit={handleSubmit}
-          className="mb-10 space-y-5 rounded-2xl bg-white p-8 shadow-sm"
+        <button
+          onClick={handleLogout}
+          className="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-gray-300 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
         >
-          <div>
-            <h2 className="text-xl font-semibold">
-              {editingId ? "Edit Publication" : "Add Publication"}
-            </h2>
+          Logout
+        </button>
+      </div>
 
-            <p className="mt-1 text-sm text-gray-500">
-              Add a publication to the research portfolio.
-            </p>
-          </div>
+      {error && (
+        <div className="mb-6 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-300">
+          {error}
+        </div>
+      )}
 
+      {/* Form */}
+      <form
+        onSubmit={handleSubmit}
+        className="mb-10 space-y-5 rounded-2xl border border-white/10 bg-[#111820] p-8"
+      >
+        <div className="border-b border-white/10 pb-5">
+          <h2 className="text-xl font-semibold text-white">
+            {editingId ? "Edit Publication" : "Add Publication"}
+          </h2>
+
+          <p className="mt-1 text-sm text-gray-500">
+            Add a publication to the research portfolio.
+          </p>
+        </div>
+
+        <div>
+          <label className="mb-2 block text-sm font-medium text-gray-300">
+            Title
+          </label>
+
+          <input
+            name="title"
+            value={form.title}
+            onChange={handleChange}
+            required
+            className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-white/30"
+            placeholder="Publication title"
+          />
+        </div>
+
+        <div>
+          <label className="mb-2 block text-sm font-medium text-gray-300">
+            Authors
+          </label>
+
+          <input
+            name="authors"
+            value={form.authors}
+            onChange={handleChange}
+            className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-white/30"
+            placeholder="John Smith, Jane Doe, ..."
+          />
+        </div>
+
+        <div className="grid gap-5 md:grid-cols-2">
           <div>
-            <label className="mb-2 block text-sm font-medium">
-              Title
+            <label className="mb-2 block text-sm font-medium text-gray-300">
+              Journal / Conference
             </label>
 
             <input
-              name="title"
-              value={form.title}
+              name="journal"
+              value={form.journal}
               onChange={handleChange}
-              required
-              className="w-full rounded-lg border border-gray-300 px-4 py-3"
-              placeholder="Publication title"
+              className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-white/30"
+              placeholder="Nature Machine Intelligence"
             />
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium">
-              Authors
+            <label className="mb-2 block text-sm font-medium text-gray-300">
+              Year
             </label>
 
             <input
-              name="authors"
-              value={form.authors}
-              onChange={handleChange}
-              className="w-full rounded-lg border border-gray-300 px-4 py-3"
-              placeholder="John Smith, Jane Doe, ..."
-            />
-          </div>
-
-          <div className="grid gap-5 md:grid-cols-2">
-            <div>
-              <label className="mb-2 block text-sm font-medium">
-                Journal / Conference
-              </label>
-
-              <input
-                name="journal"
-                value={form.journal}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3"
-                placeholder="Nature Machine Intelligence"
-              />
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium">
-                Year
-              </label>
-
-              <input
-                name="year"
-                type="number"
-                value={form.year}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3"
-                placeholder="2026"
-              />
-            </div>
-          </div>
-
-          <div className="grid gap-5 md:grid-cols-2">
-            <div>
-              <label className="mb-2 block text-sm font-medium">
-                DOI
-              </label>
-
-              <input
-                name="doi"
-                value={form.doi}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3"
-                placeholder="10.1234/example"
-              />
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium">
-                Publication URL
-              </label>
-
-              <input
-                name="url"
-                type="url"
-                value={form.url}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3"
-                placeholder="https://..."
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-medium">
-              Description
-            </label>
-
-            <textarea
-              name="description"
-              value={form.description}
-              onChange={handleChange}
-              rows={4}
-              className="w-full rounded-lg border border-gray-300 px-4 py-3"
-              placeholder="Short description..."
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-medium">
-              Display Order
-            </label>
-
-            <input
-              name="display_order"
+              name="year"
               type="number"
-              value={form.display_order}
+              value={form.year}
               onChange={handleChange}
-              className="w-full rounded-lg border border-gray-300 px-4 py-3"
+              className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-white/30"
+              placeholder="2026"
+            />
+          </div>
+        </div>
+
+        <div className="grid gap-5 md:grid-cols-2">
+          <div>
+            <label className="mb-2 block text-sm font-medium text-gray-300">
+              DOI
+            </label>
+
+            <input
+              name="doi"
+              value={form.doi}
+              onChange={handleChange}
+              className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-white/30"
+              placeholder="10.1234/example"
             />
           </div>
 
-          <div className="flex gap-3">
-            <button
-              type="submit"
-              disabled={saving}
-              className="rounded-lg bg-black px-6 py-3 font-medium text-white hover:bg-gray-800 disabled:opacity-50"
-            >
-              {saving
-                ? "Saving..."
-                : editingId
-                  ? "Update Publication"
-                  : "Add Publication"}
-            </button>
+          <div>
+            <label className="mb-2 block text-sm font-medium text-gray-300">
+              Publication URL
+            </label>
 
-            {editingId && (
-              <button
-                type="button"
-                onClick={handleCancelEdit}
-                className="rounded-lg border border-gray-300 px-6 py-3 font-medium hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-            )}
+            <input
+              name="url"
+              type="url"
+              value={form.url}
+              onChange={handleChange}
+              className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-white/30"
+              placeholder="https://..."
+            />
           </div>
-        </form>
+        </div>
 
-        {/* Publications list */}
+        <div>
+          <label className="mb-2 block text-sm font-medium text-gray-300">
+            Description
+          </label>
 
-        <div className="space-y-4">
-          {publications.length === 0 ? (
-            <div className="rounded-2xl bg-white p-8 text-center text-gray-500">
-              No publications yet.
-            </div>
-          ) : (
-            publications.map((publication) => (
-              <article
-                key={publication.id}
-                className="rounded-2xl bg-white p-6 shadow-sm"
-              >
-                <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold">
-                      {publication.title}
-                    </h3>
+          <textarea
+            name="description"
+            value={form.description}
+            onChange={handleChange}
+            rows={4}
+            className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-white/30"
+            placeholder="Short description..."
+          />
+        </div>
 
-                    {publication.authors && (
-                      <p className="mt-2 text-sm text-gray-600">
-                        {publication.authors}
-                      </p>
-                    )}
+        <div>
+  <label className="mb-2 block text-sm font-medium text-gray-300">
+    Publication Image
+  </label>
 
-                    <div className="mt-2 text-sm text-gray-500">
-                      {publication.journal && (
-                        <span>{publication.journal}</span>
-                      )}
+  <input
+    type="file"
+    accept="image/*"
+    onChange={(event) => {
+      setImageFile(event.target.files?.[0] ?? null);
+    }}
+    className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-sm text-gray-300 outline-none transition file:mr-4 file:rounded-md file:border-0 file:bg-white file:px-4 file:py-2 file:text-sm file:font-medium file:text-gray-900 hover:border-white/20"
+  />
 
-                      {publication.year && (
-                        <span> · {publication.year}</span>
-                      )}
-                    </div>
+  <p className="mt-2 text-xs text-gray-600">
+    Upload an image for this publication.
+  </p>
 
-                    {publication.description && (
-                      <p className="mt-3 text-sm leading-6 text-gray-600">
-                        {publication.description}
-                      </p>
-                    )}
+  {form.image_url && !imageFile && (
+    <div className="mt-4">
+      <img
+        src={form.image_url}
+        alt="Current publication"
+        className="h-32 w-48 rounded-xl object-cover"
+      />
+    </div>
+  )}
 
-                    {publication.doi && (
-                      <p className="mt-3 text-sm">
-                        DOI: {publication.doi}
-                      </p>
-                    )}
-                  </div>
+  {imageFile && (
+    <p className="mt-2 text-xs text-gray-500">
+      Selected: {imageFile.name}
+    </p>
+  )}
+</div>
 
-                  <div className="flex shrink-0 gap-2">
-                    <button
-                      onClick={() => handleEdit(publication)}
-                      className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
-                    >
-                      Edit
-                    </button>
+        <div>
+          <label className="mb-2 block text-sm font-medium text-gray-300">
+            Display Order
+          </label>
 
-                    <button
-                      onClick={() => handleDelete(publication.id)}
-                      className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700 hover:bg-red-100"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              </article>
-            ))
+          <input
+            name="display_order"
+            type="number"
+            value={form.display_order}
+            onChange={handleChange}
+            className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-white/30"
+          />
+        </div>
+
+        <div className="flex gap-3 pt-2">
+          <button
+            type="submit"
+            disabled={saving || imageUploading}
+            className="rounded-lg bg-white px-6 py-3 font-medium text-gray-900 transition hover:bg-gray-200 disabled:opacity-50"
+          >
+            {saving || imageUploading
+              ? "Saving..."
+              : editingId
+                ? "Update Publication"
+                : "Add Publication"}
+          </button>
+
+          {editingId && (
+            <button
+              type="button"
+              onClick={handleCancelEdit}
+              className="rounded-lg border border-white/10 bg-white/5 px-6 py-3 font-medium text-gray-300 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+            >
+              Cancel
+            </button>
           )}
         </div>
+      </form>
+
+      {/* Publications list */}
+      <div className="space-y-4">
+        {publications.length === 0 ? (
+          <div className="rounded-2xl border border-white/10 bg-[#111820] p-8 text-center text-gray-500">
+            No publications yet.
+          </div>
+        ) : (
+          publications.map((publication) => (
+
+<article
+  key={publication.id}
+  className="rounded-2xl border border-white/10 bg-[#111820] p-6 transition hover:border-white/15"
+>
+  <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+    <div className="flex min-w-0 flex-1 flex-col gap-5 sm:flex-row">
+      {publication.image_url && (
+        <div className="shrink-0">
+          <img
+            src={publication.image_url}
+            alt={publication.title}
+            className="h-28 w-full rounded-xl object-cover sm:h-24 sm:w-32"
+          />
+        </div>
+      )}
+
+      <div className="min-w-0">
+        <h3 className="text-lg font-semibold text-gray-100">
+          {publication.title}
+        </h3>
+
+        {publication.authors && (
+          <p className="mt-2 text-sm text-gray-400">
+            {publication.authors}
+          </p>
+        )}
+
+        <div className="mt-2 text-sm text-gray-500">
+          {publication.journal && (
+            <span>{publication.journal}</span>
+          )}
+
+          {publication.year && (
+            <span> · {publication.year}</span>
+          )}
+        </div>
+
+        {publication.description && (
+          <p className="mt-3 text-sm leading-6 text-gray-400">
+            {publication.description}
+          </p>
+        )}
+
+        {publication.doi && (
+          <p className="mt-3 text-sm text-gray-500">
+            <span className="text-gray-400">DOI:</span>{" "}
+            {publication.doi}
+          </p>
+        )}
       </div>
-    </main>
-  );
+    </div>
+
+    <div className="flex shrink-0 gap-2">
+      <button
+        type="button"
+        onClick={() => handleEdit(publication)}
+        className="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-gray-300 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+      >
+        Edit
+      </button>
+
+      <button
+        type="button"
+        onClick={() => handleDelete(publication.id)}
+        className="rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm text-red-300 transition hover:bg-red-500/20"
+      >
+        Delete
+      </button>
+    </div>
+  </div>
+</article>
+
+          ))
+        )}
+      </div>
+
+      <div className="mt-12 border-t border-white/10 pt-6">
+        <p className="text-xs text-gray-600">
+          Portfolio Management System
+        </p>
+      </div>
+    </div>
+  </main>
+);
 }

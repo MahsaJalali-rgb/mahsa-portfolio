@@ -438,486 +438,476 @@ const payload = {
     );
   }
 
-  return (
-    <main className="min-h-screen bg-gray-50 px-6 py-10">
-      <div className="mx-auto max-w-7xl">
-        {/* Header */}
-
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <button
-              onClick={() => navigate("/admin")}
-              className="mb-3 text-sm text-gray-500 hover:text-gray-900"
-            >
-              ← Back to dashboard
-            </button>
-
-            <h1 className="text-3xl font-bold">
-              Team
-            </h1>
-
-            <p className="mt-2 text-gray-500">
-              Manage team roles and members.
-            </p>
-          </div>
-
+return (
+  <main className="min-h-screen bg-[#0b0f14] px-6 py-10 text-white">
+    <div className="mx-auto max-w-7xl">
+      {/* Header */}
+      <div className="mb-8 flex items-center justify-between">
+        <div>
           <button
-            onClick={handleLogout}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-white"
+            onClick={() => navigate("/admin")}
+            className="mb-3 text-sm text-gray-500 transition hover:text-white"
           >
-            Logout
+            ← Back to dashboard
           </button>
+
+          <p className="text-xs font-medium uppercase tracking-[0.3em] text-gray-600">
+            Administration
+          </p>
+
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white">
+            Team
+          </h1>
+
+          <p className="mt-2 text-sm text-gray-500">
+            Manage team roles and members.
+          </p>
         </div>
 
-        {/* Error */}
+        <button
+          onClick={handleLogout}
+          className="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-gray-300 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+        >
+          Logout
+        </button>
+      </div>
 
-        {error && (
-          <div className="mb-6 rounded-lg bg-red-50 p-4 text-sm text-red-700">
-            {error}
-          </div>
-        )}
+      {/* Error */}
+      {error && (
+        <div className="mb-6 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-300">
+          {error}
+        </div>
+      )}
 
-        {/* Roles */}
+      {/* Roles */}
+      <section className="mb-10 rounded-2xl border border-white/10 bg-[#111820] p-8">
+        <div className="mb-6 border-b border-white/10 pb-5">
+          <h2 className="text-xl font-semibold text-white">
+            Team Roles
+          </h2>
 
-        <section className="mb-10 rounded-2xl bg-white p-8 shadow-sm">
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold">
-              Team Roles
-            </h2>
+          <p className="mt-1 text-sm text-gray-500">
+            Role order controls the hierarchy on the public website.
+          </p>
+        </div>
 
-            <p className="mt-1 text-sm text-gray-500">
-              Role order controls the hierarchy on the
-              public website.
-            </p>
-          </div>
+        <form
+          onSubmit={handleRoleSubmit}
+          className="mb-8 grid gap-4 md:grid-cols-[1fr_180px_auto]"
+        >
+          <input
+            name="name"
+            value={roleForm.name}
+            onChange={handleRoleChange}
+            placeholder="Role name"
+            required
+            className="rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-white/30"
+          />
 
-          
+          <input
+            name="display_order"
+            type="number"
+            value={roleForm.display_order}
+            onChange={handleRoleChange}
+            placeholder="Order"
+            className="rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-white/30"
+          />
 
-          <form
-            onSubmit={handleRoleSubmit}
-            className="mb-8 grid gap-4 md:grid-cols-[1fr_180px_auto]"
-          >
-            <input
-              name="name"
-              value={roleForm.name}
-              onChange={handleRoleChange}
-              placeholder="Role name"
-              required
-              className="rounded-lg border border-gray-300 px-4 py-3"
-            />
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              disabled={savingRole}
+              className="rounded-lg bg-white px-5 py-3 text-sm font-medium text-gray-900 transition hover:bg-gray-200 disabled:opacity-50"
+            >
+              {savingRole
+                ? "Saving..."
+                : editingRoleId
+                  ? "Update"
+                  : "Add Role"}
+            </button>
 
-            <input
-              name="display_order"
-              type="number"
-              value={roleForm.display_order}
-              onChange={handleRoleChange}
-              placeholder="Order"
-              className="rounded-lg border border-gray-300 px-4 py-3"
-            />
-
-            <div className="flex gap-2">
+            {editingRoleId && (
               <button
-                type="submit"
-                disabled={savingRole}
-                className="rounded-lg bg-black px-5 py-3 text-sm font-medium text-white disabled:opacity-50"
+                type="button"
+                onClick={handleCancelRoleEdit}
+                className="rounded-lg border border-white/10 bg-white/5 px-5 py-3 text-sm text-gray-300 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
               >
-                {savingRole
-                  ? "Saving..."
-                  : editingRoleId
-                    ? "Update"
-                    : "Add Role"}
+                Cancel
               </button>
-
-              {editingRoleId && (
-                <button
-                  type="button"
-                  onClick={handleCancelRoleEdit}
-                  className="rounded-lg border border-gray-300 px-5 py-3 text-sm"
-                >
-                  Cancel
-                </button>
-              )}
-            </div>
-          </form>
-
-          <div className="space-y-3">
-            {roles.map((role) => (
-              <div
-                key={role.id}
-                className="flex items-center justify-between rounded-xl border border-gray-200 p-4"
-              >
-                <div>
-                  <p className="font-medium">
-                    {role.name}
-                  </p>
-
-                  <p className="mt-1 text-sm text-gray-500">
-                    Hierarchy order:{" "}
-                    {role.display_order}
-                  </p>
-                </div>
-
-                <div className="flex gap-2">
-                  <button
-                    onClick={() =>
-                      handleEditRole(role)
-                    }
-                    className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
-                  >
-                    Edit
-                  </button>
-
-                  <button
-                    onClick={() =>
-                      handleDeleteRole(role)
-                    }
-                    className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Members */}
-
-        <section className="mb-10 rounded-2xl bg-white p-8 shadow-sm">
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold">
-              {editingMemberId
-                ? "Edit Team Member"
-                : "Add Team Member"}
-            </h2>
-
-            <p className="mt-1 text-sm text-gray-500">
-              Add members and assign their role in the
-              team hierarchy.
-            </p>
-          </div>
-
-          <form
-            onSubmit={handleMemberSubmit}
-            className="space-y-5"
-          >
-            {/* Name */}
-
-            <div>
-              <label className="mb-2 block text-sm font-medium">
-                Name
-              </label>
-
-              <input
-                name="name"
-                value={memberForm.name}
-                onChange={handleMemberChange}
-                required
-                className="w-full rounded-lg border border-gray-300 px-4 py-3"
-                placeholder="John Smith"
-              />
-            </div>
-
-            {/* Position + Role */}
-
-            <div className="grid gap-5 md:grid-cols-2">
-              <div>
-                <label className="mb-2 block text-sm font-medium">
-                  Position
-                </label>
-
-                <input
-                  name="position"
-                  value={memberForm.position}
-                  onChange={handleMemberChange}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3"
-                  placeholder=""
-                />
-              </div>
-
-              <div>
-  <label className="mb-2 block text-sm font-medium">
-    Profile Photo
-  </label>
-
-  <input
-    type="file"
-    accept="image/png,image/jpeg,image/webp"
-    onChange={(event) => {
-      setMemberPhotoFile(
-        event.target.files?.[0] ?? null,
-      );
-    }}
-    className="w-full rounded-lg border border-gray-300 px-4 py-3"
-  />
-</div>
-{editingMemberId &&
-  members.find(
-    (member) => member.id === editingMemberId,
-  )?.photo_url && (
-    <img
-      src={
-        members.find(
-          (member) =>
-            member.id === editingMemberId,
-        )?.photo_url ?? ""
-      }
-      alt="Current member"
-      className="mt-3 h-24 w-24 rounded-full object-cover"
-    />
-  )}
-
-              <div>
-                <label className="mb-2 block text-sm font-medium">
-                  Role
-                </label>
-
-                <select
-                  name="role_id"
-                  value={memberForm.role_id}
-                  onChange={handleMemberChange}
-                  required
-                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3"
-                >
-                  <option value="">
-                    Select role
-                  </option>
-
-                  {roles.map((role) => (
-                    <option
-                      key={role.id}
-                      value={role.id}
-                    >
-                      {role.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            {/* Email + LinkedIn */}
-
-            <div className="grid gap-5 md:grid-cols-2">
-              <div>
-                <label className="mb-2 block text-sm font-medium">
-                  Email
-                </label>
-
-                <input
-                  name="email"
-                  type="email"
-                  value={memberForm.email}
-                  onChange={handleMemberChange}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3"
-                  placeholder="member@example.com"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium">
-                  LinkedIn
-                </label>
-
-                <input
-                  name="linkedin"
-                  type="url"
-                  value={memberForm.linkedin}
-                  onChange={handleMemberChange}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3"
-                  placeholder="https://linkedin.com/in/..."
-                />
-              </div>
-            </div>
-
-            {/* Bio */}
-
-            <div>
-              <label className="mb-2 block text-sm font-medium">
-                Bio
-              </label>
-
-              <textarea
-                name="bio"
-                value={memberForm.bio}
-                onChange={handleMemberChange}
-                rows={5}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3"
-                placeholder="Short biography..."
-              />
-            </div>
-
-            {/* Joined + Order */}
-
-            <div className="grid gap-5 md:grid-cols-2">
-              <div>
-                <label className="mb-2 block text-sm font-medium">
-                  Joined Date
-                </label>
-
-                <input
-                  name="joined_at"
-                  type="date"
-                  value={memberForm.joined_at}
-                  onChange={handleMemberChange}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium">
-                  Display Order
-                </label>
-
-                <input
-                  name="display_order"
-                  type="number"
-                  value={memberForm.display_order}
-                  onChange={handleMemberChange}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3"
-                />
-              </div>
-            </div>
-
-            {/* Active */}
-
-            <label className="flex items-center gap-3 text-sm">
-              <input
-                type="checkbox"
-                checked={memberForm.active}
-                onChange={(event) =>
-                  setMemberForm((current) => ({
-                    ...current,
-                    active: event.target.checked,
-                  }))
-                }
-              />
-
-              Active member
-            </label>
-
-            {/* Buttons */}
-
-            <div className="flex gap-3">
-              <button
-                type="submit"
-                disabled={savingMember}
-                className="rounded-lg bg-black px-6 py-3 font-medium text-white disabled:opacity-50"
-              >
-                {savingMember
-                  ? "Saving..."
-                  : editingMemberId
-                    ? "Update Member"
-                    : "Add Member"}
-              </button>
-
-              {editingMemberId && (
-                <button
-                  type="button"
-                  onClick={
-                    handleCancelMemberEdit
-                  }
-                  className="rounded-lg border border-gray-300 px-6 py-3 font-medium"
-                >
-                  Cancel
-                </button>
-              )}
-            </div>
-          </form>
-        </section>
-
-        {/* Member List */}
-
-        <section>
-          <div className="mb-5">
-            <h2 className="text-xl font-semibold">
-              Team Members
-            </h2>
-          </div>
-
-          <div className="space-y-4">
-            {members.length === 0 ? (
-              <div className="rounded-2xl bg-white p-8 text-center text-gray-500">
-                No team members yet.
-              </div>
-            ) : (
-              members.map((member) => (
-                <article
-                  key={member.id}
-                  className="rounded-2xl bg-white p-6 shadow-sm"
-                >
-                  <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
-                    <div>
-                      <div className="flex flex-wrap items-center gap-3">
-                        <h3 className="text-lg font-semibold">
-                          {member.name}
-                        </h3>
-
-                        <span
-                          className={`rounded-full px-3 py-1 text-xs ${
-                            member.active
-                              ? "bg-green-50 text-green-700"
-                              : "bg-gray-100 text-gray-500"
-                          }`}
-                        >
-                          {member.active
-                            ? "Active"
-                            : "Inactive"}
-                        </span>
-                      </div>
-
-                      <p className="mt-2 text-sm font-medium text-gray-700">
-                        {getRoleName(member.role_id)}
-                      </p>
-
-                      {member.position && (
-                        <p className="mt-1 text-sm text-gray-500">
-                          {member.position}
-                        </p>
-                      )}
-
-                      {member.email && (
-                        <p className="mt-3 text-sm text-gray-600">
-                          {member.email}
-                        </p>
-                      )}
-
-                      {member.bio && (
-                        <p className="mt-3 max-w-3xl whitespace-pre-line text-sm leading-6 text-gray-600">
-                          {member.bio}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="flex shrink-0 gap-2">
-                      <button
-                        onClick={() =>
-                          handleEditMember(
-                            member,
-                          )
-                        }
-                        className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
-                      >
-                        Edit
-                      </button>
-
-                      <button
-                        onClick={() =>
-                          handleDeleteMember(
-                            member.id,
-                          )
-                        }
-                        className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                </article>
-              ))
             )}
           </div>
-        </section>
+        </form>
+
+        <div className="space-y-3">
+          {roles.map((role) => (
+            <div
+              key={role.id}
+              className="flex items-center justify-between rounded-xl border border-white/10 bg-[#0b0f14] p-4 transition hover:border-white/15"
+            >
+              <div>
+                <p className="font-medium text-gray-100">
+                  {role.name}
+                </p>
+
+                <p className="mt-1 text-sm text-gray-500">
+                  Hierarchy order: {role.display_order}
+                </p>
+              </div>
+
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleEditRole(role)}
+                  className="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-gray-300 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+                >
+                  Edit
+                </button>
+
+                <button
+                  onClick={() => handleDeleteRole(role)}
+                  className="rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm text-red-300 transition hover:bg-red-500/20"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Members */}
+      <section className="mb-10 rounded-2xl border border-white/10 bg-[#111820] p-8">
+        <div className="mb-6 border-b border-white/10 pb-5">
+          <h2 className="text-xl font-semibold text-white">
+            {editingMemberId
+              ? "Edit Team Member"
+              : "Add Team Member"}
+          </h2>
+
+          <p className="mt-1 text-sm text-gray-500">
+            Add members and assign their role in the team hierarchy.
+          </p>
+        </div>
+
+        <form
+          onSubmit={handleMemberSubmit}
+          className="space-y-5"
+        >
+          {/* Name */}
+          <div>
+            <label className="mb-2 block text-sm font-medium text-gray-300">
+              Name
+            </label>
+
+            <input
+              name="name"
+              value={memberForm.name}
+              onChange={handleMemberChange}
+              required
+              className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-white/30"
+              placeholder="John Smith"
+            />
+          </div>
+
+          {/* Position + Role */}
+          <div className="grid gap-5 md:grid-cols-2">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-300">
+                Position
+              </label>
+
+              <input
+                name="position"
+                value={memberForm.position}
+                onChange={handleMemberChange}
+                className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-white/30"
+                placeholder=""
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-300">
+                Profile Photo
+              </label>
+
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                onChange={(event) => {
+                  setMemberPhotoFile(
+                    event.target.files?.[0] ?? null,
+                  );
+                }}
+                className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-sm text-gray-400 file:mr-4 file:rounded-md file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-sm file:text-gray-300"
+              />
+
+              {editingMemberId &&
+                members.find(
+                  (member) => member.id === editingMemberId,
+                )?.photo_url && (
+                  <img
+                    src={
+                      members.find(
+                        (member) =>
+                          member.id === editingMemberId,
+                      )?.photo_url ?? ""
+                    }
+                    alt="Current member"
+                    className="mt-3 h-24 w-24 rounded-full border border-white/10 object-cover"
+                  />
+                )}
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-300">
+                Role
+              </label>
+
+              <select
+                name="role_id"
+                value={memberForm.role_id}
+                onChange={handleMemberChange}
+                required
+                className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition focus:border-white/30"
+              >
+                <option value="" className="bg-[#111820]">
+                  Select role
+                </option>
+
+                {roles.map((role) => (
+                  <option
+                    key={role.id}
+                    value={role.id}
+                    className="bg-[#111820]"
+                  >
+                    {role.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Email + LinkedIn */}
+          <div className="grid gap-5 md:grid-cols-2">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-300">
+                Email
+              </label>
+
+              <input
+                name="email"
+                type="email"
+                value={memberForm.email}
+                onChange={handleMemberChange}
+                className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-white/30"
+                placeholder="member@example.com"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-300">
+                LinkedIn
+              </label>
+
+              <input
+                name="linkedin"
+                type="url"
+                value={memberForm.linkedin}
+                onChange={handleMemberChange}
+                className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-white/30"
+                placeholder="https://linkedin.com/in/..."
+              />
+            </div>
+          </div>
+
+          {/* Bio */}
+          <div>
+            <label className="mb-2 block text-sm font-medium text-gray-300">
+              Bio
+            </label>
+
+            <textarea
+              name="bio"
+              value={memberForm.bio}
+              onChange={handleMemberChange}
+              rows={5}
+              className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-white/30"
+              placeholder="Short biography..."
+            />
+          </div>
+
+          {/* Joined + Order */}
+          <div className="grid gap-5 md:grid-cols-2">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-300">
+                Joined Date
+              </label>
+
+              <input
+                name="joined_at"
+                type="date"
+                value={memberForm.joined_at}
+                onChange={handleMemberChange}
+                className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition focus:border-white/30"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-300">
+                Display Order
+              </label>
+
+              <input
+                name="display_order"
+                type="number"
+                value={memberForm.display_order}
+                onChange={handleMemberChange}
+                className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-white/30"
+              />
+            </div>
+          </div>
+
+          {/* Active */}
+          <label className="flex items-center gap-3 text-sm text-gray-300">
+            <input
+              type="checkbox"
+              checked={memberForm.active}
+              onChange={(event) =>
+                setMemberForm((current) => ({
+                  ...current,
+                  active: event.target.checked,
+                }))
+              }
+              className="h-4 w-4 rounded border-white/20 bg-[#0b0f14] accent-white"
+            />
+            Active member
+          </label>
+
+          {/* Buttons */}
+          <div className="flex gap-3 pt-2">
+            <button
+              type="submit"
+              disabled={savingMember}
+              className="rounded-lg bg-white px-6 py-3 font-medium text-gray-900 transition hover:bg-gray-200 disabled:opacity-50"
+            >
+              {savingMember
+                ? "Saving..."
+                : editingMemberId
+                  ? "Update Member"
+                  : "Add Member"}
+            </button>
+
+            {editingMemberId && (
+              <button
+                type="button"
+                onClick={handleCancelMemberEdit}
+                className="rounded-lg border border-white/10 bg-white/5 px-6 py-3 font-medium text-gray-300 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+              >
+                Cancel
+              </button>
+            )}
+          </div>
+        </form>
+      </section>
+
+      {/* Member List */}
+      <section>
+        <div className="mb-5">
+          <p className="text-xs font-medium uppercase tracking-[0.3em] text-gray-600">
+            Directory
+          </p>
+
+          <h2 className="mt-2 text-xl font-semibold text-white">
+            Team Members
+          </h2>
+        </div>
+
+        <div className="space-y-4">
+          {members.length === 0 ? (
+            <div className="rounded-2xl border border-white/10 bg-[#111820] p-8 text-center text-gray-500">
+              No team members yet.
+            </div>
+          ) : (
+            members.map((member) => (
+              <article
+                key={member.id}
+                className="rounded-2xl border border-white/10 bg-[#111820] p-6 transition hover:border-white/15"
+              >
+                <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <h3 className="text-lg font-semibold text-gray-100">
+                        {member.name}
+                      </h3>
+
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs ${
+                          member.active
+                            ? "border border-emerald-500/20 bg-emerald-500/10 text-emerald-300"
+                            : "border border-white/10 bg-white/5 text-gray-500"
+                        }`}
+                      >
+                        {member.active
+                          ? "Active"
+                          : "Inactive"}
+                      </span>
+                    </div>
+
+                    <p className="mt-2 text-sm font-medium text-gray-300">
+                      {getRoleName(member.role_id)}
+                    </p>
+
+                    {member.position && (
+                      <p className="mt-1 text-sm text-gray-500">
+                        {member.position}
+                      </p>
+                    )}
+
+                    {member.email && (
+                      <p className="mt-3 text-sm text-gray-400">
+                        {member.email}
+                      </p>
+                    )}
+
+                    {member.bio && (
+                      <p className="mt-3 max-w-3xl whitespace-pre-line text-sm leading-6 text-gray-500">
+                        {member.bio}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex shrink-0 gap-2">
+                    <button
+                      onClick={() =>
+                        handleEditMember(member)
+                      }
+                      className="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-gray-300 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        handleDeleteMember(member.id)
+                      }
+                      className="rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm text-red-300 transition hover:bg-red-500/20"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))
+          )}
+        </div>
+      </section>
+
+      <div className="mt-12 border-t border-white/10 pt-6">
+        <p className="text-xs text-gray-600">
+          Portfolio Management System
+        </p>
       </div>
-    </main>
-  );
+    </div>
+  </main>
+);
+
 }

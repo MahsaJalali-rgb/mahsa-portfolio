@@ -32,15 +32,20 @@ export default function AdminLogin() {
     navigate("/admin");
   }
 
-  return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50 px-6">
-      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-sm">
+return (
+  <main className="flex min-h-screen items-center justify-center bg-[#0b0f14] px-6 text-white">
+    <div className="w-full max-w-md">
+      <div className="rounded-2xl border border-white/10 bg-[#111820] p-8">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold">
+          <p className="text-xs font-medium uppercase tracking-[0.3em] text-gray-600">
+            Portfolio Administration
+          </p>
+
+          <h1 className="mt-4 text-2xl font-semibold tracking-tight text-white">
             Admin Login
           </h1>
 
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-sm leading-6 text-gray-500">
             Sign in to manage the portfolio website.
           </p>
         </div>
@@ -49,7 +54,7 @@ export default function AdminLogin() {
           <div>
             <label
               htmlFor="email"
-              className="mb-2 block text-sm font-medium"
+              className="mb-2 block text-sm font-medium text-gray-300"
             >
               Email
             </label>
@@ -60,7 +65,7 @@ export default function AdminLogin() {
               required
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-gray-900"
+              className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-white/30"
               placeholder="admin@example.com"
             />
           </div>
@@ -68,7 +73,7 @@ export default function AdminLogin() {
           <div>
             <label
               htmlFor="password"
-              className="mb-2 block text-sm font-medium"
+              className="mb-2 block text-sm font-medium text-gray-300"
             >
               Password
             </label>
@@ -79,13 +84,13 @@ export default function AdminLogin() {
               required
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-gray-900"
+              className="w-full rounded-lg border border-white/10 bg-[#0b0f14] px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-white/30"
               placeholder="••••••••"
             />
           </div>
 
           {error && (
-            <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
+            <div className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
               {error}
             </div>
           )}
@@ -93,12 +98,18 @@ export default function AdminLogin() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-gray-900 px-4 py-3 font-medium text-white transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+            className="w-full rounded-lg bg-white px-4 py-3 font-medium text-gray-900 transition hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? "Signing in..." : "Sign in"}
           </button>
         </form>
       </div>
-    </main>
-  );
+
+      <p className="mt-6 text-center text-xs text-gray-600">
+        Portfolio Management System
+      </p>
+    </div>
+  </main>
+);
+
 }

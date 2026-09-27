@@ -53,6 +53,7 @@ type Publication = {
   updated_at?: string;
 };
 
+
 type Patent = {
   id: string;
   title: string;
@@ -116,6 +117,7 @@ const [isScrolled, setIsScrolled] = useState(false);
 const [showAllPublications, setShowAllPublications] = useState(false);
 const [showAllPatents, setShowAllPatents] = useState(false);
 const [showAllNews, setShowAllNews] = useState(false);
+const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
 useEffect(() => {
   function handleScroll() {
@@ -227,7 +229,7 @@ useEffect(() => {
     const { data, error } = await supabase
       .from("publications")
       .select(
-        "id, title, authors, journal, year, doi, url, description, display_order",
+        "id, title, authors, journal, year, doi, url, description, image_url, display_order",
       )
       .order("display_order", { ascending: true });
 
@@ -243,6 +245,7 @@ useEffect(() => {
 
   loadPublications();
 }, []);
+
 
 useEffect(() => {
   async function loadProfile() {
@@ -289,113 +292,267 @@ useEffect(() => {
 
   return (
     <main className="min-h-screen bg-white text-gray-900">
-      <nav
+
+<nav
   className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${
     isScrolled ? "pt-4" : "pt-4"
   }`}
 >
-  <div className="mx-auto max-w-7xl px-6">
+  <div className="mx-auto max-w-7xl px-4 sm:px-6">
     <div
-      className={`flex h-16 items-center justify-between rounded-2xl px-5 transition-all duration-300 ${
+      className={`rounded-2xl px-4 transition-all duration-300 md:px-5 ${
         isScrolled
-          ? "border border-white/10 bg-black/30 backdrop-blur-md"
+          ? "border border-white/10 bg-black/30 backdrop-blur-md" 
           : "border border-gray-200 bg-white/40 shadow-sm backdrop-blur-md"
       }`}
     >
-      {/* Logo / Name */}
-      <a
-        href="#home"
-        className={`text-sm font-semibold tracking-tight transition-colors duration-300 ${
-          isScrolled ? "text-black-900" : "text-white"
-        }`}
-      >
-        {profile?.name ?? "Professor Name"}
-      </a>
+      {/* Main Navbar Row */}
+      <div className="flex h-16 items-center justify-between">
 
-      {/* Navigation */}
-      <div className="hidden items-center gap-8 md:flex">
+        {/* Logo / Name */}
         <a
-          href="#about"
-          className={`text-sm transition-colors duration-300 ${
-            isScrolled
-              ? "text-gray-700 hover:text-black-950"
-              : "text-gray-300 hover:text-white"
+          href="#home"
+          onClick={() => setMobileMenuOpen(false)}
+          className={`max-w-[55%] truncate text-sm font-semibold tracking-tight transition-colors duration-300 ${
+            isScrolled ? "text-black-900" : "text-white"
           }`}
         >
-          About
+          {profile?.name ?? "Professor Name"}
         </a>
 
+        {/* Desktop Navigation */}
+        <div className="hidden items-center gap-8 md:flex">
+          <a
+            href="#about"
+            className={`text-sm transition-colors duration-300 ${
+              isScrolled
+                ? "text-gray-700 hover:text-gray-950"
+                : "text-gray-300 hover:text-white"
+            }`}
+          >
+            About
+          </a>
+
+          <a
+            href="#research"
+            className={`text-sm transition-colors duration-300 ${
+              isScrolled
+                ? "text-gray-700 hover:text-gray-950"
+                : "text-gray-300 hover:text-white"
+            }`}
+          >
+            Research
+          </a>
+
+          <a
+            href="#publications"
+            className={`text-sm transition-colors duration-300 ${
+              isScrolled
+                ? "text-gray-700 hover:text-gray-950"
+                : "text-gray-300 hover:text-white"
+            }`}
+          >
+            Publications
+          </a>
+
+          <a
+            href="#patents"
+            className={`text-sm transition-colors duration-300 ${
+              isScrolled
+                ? "text-gray-700 hover:text-gray-950"
+                : "text-gray-300 hover:text-white"
+            }`}
+          >
+            Patents
+          </a>
+
+          <a
+            href="#team"
+            className={`text-sm transition-colors duration-300 ${
+              isScrolled
+                ? "text-gray-700 hover:text-gray-950"
+                : "text-gray-300 hover:text-white"
+            }`}
+          >
+            Team
+          </a>
+
+          <a
+            href="#news"
+            className={`text-sm transition-colors duration-300 ${
+              isScrolled
+                ? "text-gray-700 hover:text-gray-950"
+                : "text-gray-300 hover:text-white"
+            }`}
+          >
+            News
+          </a>
+        </div>
+
+        {/* Desktop Contact */}
         <a
-          href="#research"
-          className={`text-sm transition-colors duration-300 ${
+          href="#contact"
+          className={`hidden rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 md:block ${
             isScrolled
-              ? "text-gray-700 hover:text-gray-950"
-              : "text-gray-300 hover:text-white"
+              ? "bg-gray-900 text-white hover:bg-gray-800"
+              : "bg-white text-gray-900 hover:bg-gray-100"
           }`}
         >
-          Research
+          Contact
         </a>
 
-        <a
-          href="#publications"
-          className={`text-sm transition-colors duration-300 ${
+        {/* Mobile Menu Button */}
+        <button
+          type="button"
+          onClick={() =>
+            setMobileMenuOpen((current) => !current)
+          }
+          aria-label={
+            mobileMenuOpen
+              ? "Close navigation menu"
+              : "Open navigation menu"
+          }
+          aria-expanded={mobileMenuOpen}
+          className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors duration-300 md:hidden ${
             isScrolled
-              ? "text-gray-700 hover:text-gray-950"
-              : "text-gray-300 hover:text-white"
+              ? "text-gray-900 hover:bg-gray-100"
+              : "text-white hover:bg-white/10"
           }`}
         >
-          Publications
-        </a>
-
-        <a
-          href="#patents"
-          className={`text-sm transition-colors duration-300 ${
-            isScrolled
-              ? "text-gray-700 hover:text-gray-950"
-              : "text-gray-300 hover:text-white"
-          }`}
-        >
-          Patents
-        </a>
-
-        <a
-          href="#team"
-          className={`text-sm transition-colors duration-300 ${
-            isScrolled
-              ? "text-gray-700 hover:text-gray-950"
-              : "text-gray-300 hover:text-white"
-          }`}
-        >
-          Team
-        </a>
-
-        <a
-          href="#news"
-          className={`text-sm transition-colors duration-300 ${
-            isScrolled
-              ? "text-gray-700 hover:text-gray-950"
-              : "text-gray-300 hover:text-white"
-          }`}
-        >
-          News
-        </a>
+          {mobileMenuOpen ? (
+            <span className="text-2xl font-light leading-none">
+              ×
+            </span>
+          ) : (
+            <span className="flex flex-col gap-1.5">
+              <span
+                className={`block h-px w-5 ${
+                  isScrolled
+                    ? "bg-gray-900"
+                    : "bg-white"
+                }`}
+              />
+              <span
+                className={`block h-px w-5 ${
+                  isScrolled
+                    ? "bg-gray-900"
+                    : "bg-white"
+                }`}
+              />
+              <span
+                className={`block h-px w-5 ${
+                  isScrolled
+                    ? "bg-gray-900"
+                    : "bg-white"
+                }`}
+              />
+            </span>
+          )}
+        </button>
       </div>
 
-      {/* Contact */}
-      <a
-        href="#contact"
-        className={`rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 ${
-          isScrolled
-            ? "bg-gray-900 text-white hover:bg-gray-800"
-            : "bg-white text-gray-900 hover:bg-gray-100"
-        }`}
-      >
-        Contact
-      </a>
+      {/* Mobile Navigation */}
+      {mobileMenuOpen && (
+        <div
+          className={`border-t py-4 md:hidden ${
+            isScrolled
+              ? "border-gray-200"
+              : "border-white/10"
+          }`}
+        >
+          <div className="flex flex-col">
+
+            <a
+              href="#about"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`border-b py-3 text-sm transition-colors ${
+                isScrolled
+                  ? "border-gray-100 text-gray-700 hover:text-black"
+                  : "border-white/10 text-gray-300 hover:text-white"
+              }`}
+            >
+              About
+            </a>
+
+            <a
+              href="#research"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`border-b py-3 text-sm transition-colors ${
+                isScrolled
+                  ? "border-gray-100 text-gray-700 hover:text-black"
+                  : "border-white/10 text-gray-300 hover:text-white"
+              }`}
+            >
+              Research
+            </a>
+
+            <a
+              href="#publications"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`border-b py-3 text-sm transition-colors ${
+                isScrolled
+                  ? "border-gray-100 text-gray-700 hover:text-black"
+                  : "border-white/10 text-gray-300 hover:text-white"
+              }`}
+            >
+              Publications
+            </a>
+
+            <a
+              href="#patents"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`border-b py-3 text-sm transition-colors ${
+                isScrolled
+                  ? "border-gray-100 text-gray-700 hover:text-black"
+                  : "border-white/10 text-gray-300 hover:text-white"
+              }`}
+            >
+              Patents
+            </a>
+
+            <a
+              href="#team"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`border-b py-3 text-sm transition-colors ${
+                isScrolled
+                  ? "border-gray-100 text-gray-700 hover:text-black"
+                  : "border-white/10 text-gray-300 hover:text-white"
+              }`}
+            >
+              Team
+            </a>
+
+            <a
+              href="#news"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`border-b py-3 text-sm transition-colors ${
+                isScrolled
+                  ? "border-gray-100 text-gray-700 hover:text-black"
+                  : "border-white/10 text-gray-300 hover:text-white"
+              }`}
+            >
+              News
+            </a>
+
+            <a
+              href="#contact"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`mt-3 rounded-full px-4 py-2.5 text-center text-sm font-medium transition-all ${
+                isScrolled
+                  ? "bg-gray-900 text-white hover:bg-gray-800"
+                  : "bg-white text-gray-900 hover:bg-gray-100"
+              }`}
+            >
+              Contact
+            </a>
+
+          </div>
+        </div>
+      )}
     </div>
   </div>
 </nav>
-     {/* Hero */}
+
 {/* Hero */}
 <section
   id="home"
@@ -411,7 +568,7 @@ useEffect(() => {
   )}
 
   {/* Gradient Overlay */}
-  <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/85 via-black/40 to-black/10" />
+  <div className="absolute inset-0 z-10 bg-linear-to-t from-black/85 via-black/40 to-black/10" />
 
   {/* Hero Content */}
   <div className="relative z-20 mx-auto w-full max-w-7xl px-6 pb-20 md:px-10 md:pb-24 lg:pb-28">
@@ -682,7 +839,6 @@ useEffect(() => {
   className="px-6 py-20 md:py-24"
 >
   <div className="mx-auto max-w-7xl">
-
     {/* Header */}
     <div className="mb-10">
       <p className="text-xs font-medium uppercase tracking-[0.3em] text-gray-400">
@@ -704,7 +860,6 @@ useEffect(() => {
       </p>
     ) : (
       <div className="rounded-3xl border border-gray-200 bg-gray-50 p-5 md:p-6 lg:p-8">
-
         {/* Publications Grid */}
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {publications
@@ -719,9 +874,8 @@ useEffect(() => {
                 key={publication.id}
                 className="group overflow-hidden rounded-2xl bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
               >
-
                 {/* Image */}
-                <div className="aspect-16/10 overflow-hidden bg-gray-100">
+                <div className="aspect-[16/10] overflow-hidden bg-gray-100">
                   {publication.image_url ? (
                     <img
                       src={publication.image_url}
@@ -737,7 +891,6 @@ useEffect(() => {
 
                 {/* Content */}
                 <div className="p-5 md:p-6">
-
                   {/* Year */}
                   {publication.year && (
                     <p className="text-xs font-medium uppercase tracking-[0.2em] text-gray-400">
@@ -825,7 +978,6 @@ useEffect(() => {
     )}
   </div>
 </section>
-
 
 
 {/* Patents */}
@@ -1277,7 +1429,7 @@ useEffect(() => {
         {profile?.orchid_id && (
           <div className="flex items-start gap-4">
             <img
-              src="/icons/orcid.svg"
+              src="/icons/orcidid.svg"
               alt="ORCID"
               className="mt-0.5 h-[18px] w-[18px] shrink-0"
             />
