@@ -721,7 +721,7 @@ useEffect(() => {
               >
 
                 {/* Image */}
-                <div className="aspect-[16/10] overflow-hidden bg-gray-100">
+                <div className="aspect-16/10 overflow-hidden bg-gray-100">
                   {publication.image_url ? (
                     <img
                       src={publication.image_url}
@@ -1292,7 +1292,7 @@ useEffect(() => {
         {profile?.address && (
           <div className="flex items-start gap-4">
             <img
-              src="/icons/location.svg"
+              src="/icons/map-pin.svg"
               alt="Address"
               className="mt-0.5 h-[18px] w-[18px] shrink-0"
             />
@@ -1325,7 +1325,7 @@ useEffect(() => {
         {profile?.email && (
           <div className="flex items-start gap-4">
             <img
-              src="/icons/email.svg"
+              src="/icons/mail.svg"
               alt="Email"
               className="mt-0.5 h-[18px] w-[18px] shrink-0"
             />
@@ -1343,7 +1343,7 @@ useEffect(() => {
         {profile?.x_account && (
           <div className="flex items-start gap-4">
             <img
-              src="/icons/x.svg"
+              src="/icons/twitter.svg"
               alt="X"
               className="mt-0.5 h-[18px] w-[18px] shrink-0"
             />
